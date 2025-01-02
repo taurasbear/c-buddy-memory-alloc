@@ -25,6 +25,18 @@ void initialize_memory_allocator()
     free_btree->right = NULL;
 }
 
+int allocate_memory(int size)
+{
+    if (size == NULL)
+        return 1;
+
+    BlockHeader *current = free_btree;
+
+    
+
+    return NULL;
+}
+
 int main()
 {
     initialize_memory_allocator();
