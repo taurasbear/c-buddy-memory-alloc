@@ -1,17 +1,9 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include "block_header.h"
 
 #define MEMORY_POOL_SIZE 1024
-
-typedef struct BlockHeader
-{
-    int size;
-    bool free;
-    struct BlockHeader *left;
-    struct BlockHeader *right;
-
-} BlockHeader;
 
 static uint8_t memory_pool[MEMORY_POOL_SIZE];
 
@@ -31,8 +23,6 @@ int allocate_memory(int size)
         return 1;
 
     BlockHeader *current = free_btree;
-
-    
 
     return NULL;
 }
