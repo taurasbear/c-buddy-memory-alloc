@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "block_header.h"
+#include "stack.h"
 
 #define MEMORY_POOL_SIZE 1024
 
@@ -19,19 +20,59 @@ void initialize_memory_allocator()
 
 int allocate_memory(int size)
 {
-    if (size == NULL)
+    if (size == 0)
         return 1;
 
     BlockHeader *current = free_btree;
 
-    return NULL;
+    return 1;
+}
+
+void print_block(BlockHeader block, int count)
+{
+    printf("Count %d: size=%d, free=%d, left=%p, right=%p\n", count, block.size, block.free, (void *)block.left, (void *)block.right);
 }
 
 int main()
 {
     initialize_memory_allocator();
 
-    printf("Hello World!");
+    printf("Hello World!\n");
+
+    Stack stack;
+    BlockHeader block1 = {64, false, NULL, NULL};
+    BlockHeader block2 = {64, true, NULL, NULL};
+    BlockHeader block3 = {128, false, &block1, &block2};
+    BlockHeader block4 = {128, false, NULL, NULL};
+    BlockHeader block5 = {256, false, &block3, &block4};
+
+    // printf("Block 1: size=%d, free=%d, left=%p, right=%p\n", block1.size, block1.free, (void *)block1.left, (void *)block1.right);
+    // printf("Block 2: size=%d, free=%d, left=%p, right=%p\n", block2.size, block2.free, (void *)block2.left, (void *)block2.right);
+    // printf("Block 3: size=%d, free=%d, left=%p, right=%p\n", block3.size, block3.free, (void *)block3.left, (void *)block3.right);
+
+    stack_init(&stack, 3);
+
+    printf("Pushing block1, block2, block3\n");
+    stack_push(&stack, block1);
+    stack_push(&stack, block2);
+    stack_push(&stack, block3);
+
+    printf("Stack capacity = %d\n", stack.capacity);
+    printf("Stack top = %d\n", stack.top);
+    printf("\n");
+
+    // printf("Popping block1\n");
+    // BlockHeader pop_block1 = stack_pop(&stack);
+    // print_block(block1, 1);
+
+    printf("Pushing block4\n");
+    stack_push(&stack, block4);
+
+    printf("Stack capacity = %d\n", stack.capacity);
+    printf("Stack top = %d\n", stack.top);
+    printf("\n");
+
+    stack_free(&stack);
 
     return 0;
 }

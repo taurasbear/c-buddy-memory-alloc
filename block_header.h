@@ -1,3 +1,8 @@
+#ifndef BLOCK_HEADER_H
+#define BLOCK_HEADER_H
+
+#include <stdbool.h>
+
 typedef struct BlockHeader
 {
     int size;
@@ -6,3 +11,5 @@ typedef struct BlockHeader
     struct BlockHeader *right;
 
 } BlockHeader;
+
+#endif
