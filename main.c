@@ -20,8 +20,10 @@ void initialize_memory_allocator()
 
 int allocate_memory(int size)
 {
-    if (size == 0)
-        return 1;
+    if (size <= 0 || size)
+    {
+        return -1;
+    }
 
     BlockHeader *current = free_btree;
 
@@ -37,6 +39,38 @@ bool is_block_empty(BlockHeader block)
 {
     return block.size == 0 && block.free == false && block.left == NULL && block.right == NULL;
 }
+
+// int get_bit(int number)
+
+bool is_power_of_two(int number)
+{
+    if (number <= 0)
+    {
+        return false;
+    }
+
+    return (number & (number - 1)) == 0;
+}
+
+// bool is_power_of_two(int number)
+// {
+//     int on_count = 0;
+//     for (int i = 0; i < sizeof(int); i++)
+//     {
+//         int first_bit = number & 1;
+//         if (first_bit == 1)
+//         {
+//             on_count++;
+//             if (on_count > 1)
+//             {
+//                 return false;
+//             }
+//         }
+//         number >> 1;
+//     }
+
+//     return true;
+// }
 
 int main()
 {
@@ -101,6 +135,22 @@ int main()
     }
 
     stack_free(&stack);
+
+    printf("Testing is_power_of_two method\n");
+
+    int a = 2;
+    printf("Is %d a number power of two: %d\n", a, is_power_of_two(a));
+
+    int b = 3;
+    printf("Is %d a number power of two: %d\n", b, is_power_of_two(b));
+
+    int c = 1024;
+    printf("Is %d a number power of two: %d\n", c, is_power_of_two(c));
+
+    int d = 1025;
+    printf("Is %d a number power of two: %d\n", d, is_power_of_two(d));
+
+    printf("Size of int: %d", sizeof(int));
 
     return 0;
 }
