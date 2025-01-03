@@ -33,6 +33,11 @@ void print_block(BlockHeader block, int count)
     printf("Count %d: size=%d, free=%d, left=%p, right=%p\n", count, block.size, block.free, (void *)block.left, (void *)block.right);
 }
 
+bool is_block_empty(BlockHeader block)
+{
+    return block.size == 0 && block.free == false && block.left == NULL && block.right == NULL;
+}
+
 int main()
 {
     initialize_memory_allocator();
@@ -71,6 +76,29 @@ int main()
     printf("Stack capacity = %d\n", stack.capacity);
     printf("Stack top = %d\n", stack.top);
     printf("\n");
+
+    printf("Popping block4, block3, block2, block1\n");
+
+    BlockHeader pop_block4 = stack_pop(&stack);
+    BlockHeader pop_block3 = stack_pop(&stack);
+    BlockHeader pop_block2 = stack_pop(&stack);
+    BlockHeader pop_block1 = stack_pop(&stack);
+
+    printf("Printing each popped block\n");
+
+    print_block(block4, 4);
+    print_block(block3, 3);
+    print_block(block2, 2);
+    print_block(block1, 1);
+
+    printf("Trying to pop an empty stack\n");
+
+    BlockHeader pop_empty = stack_pop(&stack);
+
+    if (is_block_empty(pop_empty))
+    {
+        printf("pop_empty is empty");
+    }
 
     stack_free(&stack);
 
