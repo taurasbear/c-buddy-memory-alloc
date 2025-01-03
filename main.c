@@ -18,14 +18,47 @@ void initialize_memory_allocator()
     free_btree->right = NULL;
 }
 
+bool is_power_of_two(int number)
+{
+    if (number <= 0)
+    {
+        return false;
+    }
+
+    return (number & (number - 1)) == 0;
+}
+
+int round_up_to_power_of_two(int size)
+{
+    if (size <= 0)
+    {
+        return 1;
+    }
+
+    size--;
+    size |= size >> 1;
+    size |= size >> 2;
+    size |= size >> 4;
+    size |= size >> 8;
+    size |= size >> 16;
+    //size |= size >> 32;
+    size++;
+
+    return size;
+}
+
 int allocate_memory(int size)
 {
-    if (size <= 0 || size)
+    if (!is_power_of_two(size))
     {
-        return -1;
+        // round to closest power of two
     }
 
     BlockHeader *current = free_btree;
+    // while (current)
+    // {
+    //     if (current->size)
+    // }
 
     return 1;
 }
@@ -38,18 +71,6 @@ void print_block(BlockHeader block, int count)
 bool is_block_empty(BlockHeader block)
 {
     return block.size == 0 && block.free == false && block.left == NULL && block.right == NULL;
-}
-
-// int get_bit(int number)
-
-bool is_power_of_two(int number)
-{
-    if (number <= 0)
-    {
-        return false;
-    }
-
-    return (number & (number - 1)) == 0;
 }
 
 // bool is_power_of_two(int number)
@@ -151,6 +172,12 @@ int main()
     printf("Is %d a number power of two: %d\n", d, is_power_of_two(d));
 
     printf("Size of int: %d", sizeof(int));
+
+    printf("Testing round_up_to_power_of_two method\n");
+
+    printf("Round %d to closest number power of two: %d\n", a, round_up_to_power_of_two(a));
+    printf("Round %d to closest number power of two: %d\n", b, round_up_to_power_of_two(b));
+    printf("Round %d to closest number power of two: %d\n", d, round_up_to_power_of_two(d));
 
     return 0;
 }
