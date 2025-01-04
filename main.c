@@ -89,7 +89,7 @@ void split_block(BlockHeader *block)
     block->right = &right;
 }
 
-int allocate_memory(unsigned int size /*is this okay to do?*/) // shouldn't this return a pointer instead of an int, cause malloc returns pointer right?
+void *allocate_memory(unsigned int size /*is this okay to do?*/)
 {
     // i don't think it makes sense to do this
     // if (!is_power_of_two(size))
@@ -103,19 +103,23 @@ int allocate_memory(unsigned int size /*is this okay to do?*/) // shouldn't this
         return NULL;
     }
 
+    Stack blockStack;
+    stack_init(&blockStack, 8);
+
     BlockHeader *current = free_btree;
     while (current)
     {
-        if (current->size >= size)
+        // add left and right to stack
+        stack_push(&blockStack, current->left)
+
+            if (current->size >= size && !is_block_split(&current) && current->free)
         {
             if (get_split_size(current->size) < size)
             {
-                // check if it's split
                 // occupy current block
             }
             else
             {
-                // check if it's split
                 // split
             }
         }
@@ -125,7 +129,7 @@ int allocate_memory(unsigned int size /*is this okay to do?*/) // shouldn't this
         }
     }
 
-    return 1;
+    return NULL; // Out of memory
 }
 
 void print_block(BlockHeader block, int count)
