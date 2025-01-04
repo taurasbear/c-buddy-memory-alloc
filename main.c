@@ -101,7 +101,7 @@ void split_block(BlockHeader *block)
     block->right = right;
 }
 
-void *allocate_memory(unsigned int size /*is this okay to do?*/)
+void *allocate_memory(int size)
 {
     if (size <= 0)
     {
@@ -117,7 +117,6 @@ void *allocate_memory(unsigned int size /*is this okay to do?*/)
     {
         if (current->size >= size && is_block_split(current))
         {
-            // add left and right to stack
             stack_push(&blockStack, current->right);
             stack_push(&blockStack, current->left);
         }
@@ -127,13 +126,11 @@ void *allocate_memory(unsigned int size /*is this okay to do?*/)
             int split_size = get_split_size(current);
             if (split_size < 0 || split_size < size)
             {
-                // occupy current block
                 current->free = false;
                 return current; // shouldn't it return pointer to free memory and not to struct metadata?
             }
             else
             {
-                // split
                 split_block(current);
                 stack_push(&blockStack, current->right);
                 stack_push(&blockStack, current->left);
@@ -141,7 +138,6 @@ void *allocate_memory(unsigned int size /*is this okay to do?*/)
         }
         else
         {
-            // pop stack
             current = stack_pop(&blockStack);
             if (!current)
             {
@@ -184,7 +180,6 @@ void free_memory(void *mem)
 
         if (!parent)
         {
-            // no parent, block is whole pool
             return;
         }
 
@@ -226,12 +221,10 @@ void print_memory_pool()
 
 int main()
 {
+    printf("Hello World!\n");
+
     initialize_memory_allocator();
 
-    printf("Hello World!\n");
-    BlockHeader block1 = {8, false, NULL, NULL};
-    printf("number: %d", get_split_size(&block1));
-    printf("-20 < 9?: %d", -20 < 9);
     int *a = allocate_memory(128);
     int *b = allocate_memory(128);
     int *c = allocate_memory(128);
