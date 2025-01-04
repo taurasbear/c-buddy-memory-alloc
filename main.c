@@ -14,6 +14,7 @@ void initialize_memory_allocator()
 {
     free_btree = (BlockHeader *)memory_pool;
     free_btree->size = MEMORY_POOL_SIZE - sizeof(BlockHeader);
+    free_btree->free = true;
     free_btree->left = NULL;
     free_btree->right = NULL;
 }
@@ -26,6 +27,16 @@ bool is_power_of_two(int number)
     }
 
     return (number & (number - 1)) == 0;
+}
+
+bool is_block_split(BlockHeader *block) // is it okay to ask for a pointer here?
+{
+    return block->left != NULL && block->right != NULL;
+}
+
+bool is_block_empty(BlockHeader block)
+{
+    return block.size == 0 && block.free == false && block.left == NULL && block.right == NULL;
 }
 
 int round_up_to_power_of_two(int size)
@@ -41,24 +52,78 @@ int round_up_to_power_of_two(int size)
     size |= size >> 4;
     size |= size >> 8;
     size |= size >> 16;
-    //size |= size >> 32;
+    // size |= size >> 32;
     size++;
 
     return size;
 }
 
-int allocate_memory(int size)
+int get_split_size(BlockHeader *block)
 {
-    if (!is_power_of_two(size))
+    return (block->size / 2) - 16
+}
+
+void split_block(BlockHeader *block)
+{
+    if (is_block_split(block))
     {
-        // round to closest power of two
+        return;
+    }
+
+    int split_size = block->size / 2;
+
+    BlockHeader *left = (BlockHeader *)((uint8_t *)block + sizeof(BlockHeader));
+    BlockHeader *right = (BlockHeader *)((uint8_t *)left + split_size);
+
+    left->size = split_size;
+    left->free = true;
+    left->left = NULL;
+    left->right = NULL;
+
+    right->size = split_size;
+    right->free = true;
+    right->left = NULL;
+    right->right = NULL;
+
+    block->left = &left;
+    block->right = &right;
+}
+
+int allocate_memory(unsigned int size /*is this okay to do?*/) // shouldn't this return a pointer instead of an int, cause malloc returns pointer right?
+{
+    // i don't think it makes sense to do this
+    // if (!is_power_of_two(size))
+    // {
+    //     // round to closest power of two
+    // }
+
+    if (size <= 0)
+    {
+        fprintf(stderr, "parameter 'size' must be more than 0");
+        return NULL;
     }
 
     BlockHeader *current = free_btree;
-    // while (current)
-    // {
-    //     if (current->size)
-    // }
+    while (current)
+    {
+        if (current->size >= size)
+        {
+            if (get_split_size(current->size) < size)
+            {
+                // check if it's split
+                // occupy current block
+            }
+            else
+            {
+                // check if it's split
+                // split
+            }
+        }
+        else
+        {
+            // pop stack
+        }
+    }
 
     return 1;
 }
@@ -66,11 +131,6 @@ int allocate_memory(int size)
 void print_block(BlockHeader block, int count)
 {
     printf("Count %d: size=%d, free=%d, left=%p, right=%p\n", count, block.size, block.free, (void *)block.left, (void *)block.right);
-}
-
-bool is_block_empty(BlockHeader block)
-{
-    return block.size == 0 && block.free == false && block.left == NULL && block.right == NULL;
 }
 
 // bool is_power_of_two(int number)
@@ -171,7 +231,7 @@ int main()
     int d = 1025;
     printf("Is %d a number power of two: %d\n", d, is_power_of_two(d));
 
-    printf("Size of int: %d", sizeof(int));
+    printf("Size of int: %d\n", sizeof(int));
 
     printf("Testing round_up_to_power_of_two method\n");
 
