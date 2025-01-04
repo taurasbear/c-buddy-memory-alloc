@@ -8,7 +8,7 @@ void stack_init(Stack *stack, int capacity)
 {
     stack->capacity = capacity;
     stack->top = -1;
-    stack->data = (BlockHeader *)malloc(stack->capacity * sizeof(BlockHeader));
+    stack->data = (BlockHeader **)malloc(stack->capacity * sizeof(BlockHeader *));
     if (stack->data == NULL)
     {
         fprintf(stderr, "Memory allocation failed\n");
@@ -31,7 +31,7 @@ void stack_push(Stack *stack, BlockHeader *element)
     if (stack_is_full(stack))
     {
         stack->capacity *= 2;
-        stack->data = (BlockHeader *)realloc(stack->data, stack->capacity * sizeof(BlockHeader));
+        stack->data = (BlockHeader **)realloc(stack->data, stack->capacity * sizeof(BlockHeader *));
         if (stack->data == NULL)
         {
             fprintf(stderr, "Memory allocation failed\n");
@@ -49,7 +49,7 @@ BlockHeader *stack_pop(Stack *stack)
         fprintf(stderr, "Stack underflow\n");
         return NULL;
     }
-
+    // maybe realloc?
     return stack->data[stack->top--];
 }
 
