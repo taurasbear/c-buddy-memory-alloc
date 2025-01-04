@@ -12,8 +12,8 @@ typedef struct Stack
 } Stack;
 
 void stack_init(Stack *stack, int capacity);
-void stack_push(Stack *stack, BlockHeader element);
-BlockHeader stack_pop(Stack *stack);
+void stack_push(Stack *stack, BlockHeader *element);
+BlockHeader *stack_pop(Stack *stack);
 void stack_free(Stack *stack);
 bool stack_is_full(Stack *stack);
 bool stack_is_empty(Stack *stack);
