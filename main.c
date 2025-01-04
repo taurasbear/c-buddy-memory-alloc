@@ -147,10 +147,57 @@ void *allocate_memory(unsigned int size /*is this okay to do?*/)
     return NULL; // Out of memory
 }
 
-void print_block(BlockHeader block, int count)
+BlockHeader *get_block_parent(BlockHeader *block)
 {
-    printf("Count %d: size=%d, free=%d, left=%p, right=%p\n", count, block.size, block.free, (void *)block.left, (void *)block.right);
+    BlockHeader *temp = (BlockHeader *)((uint8_t *)block - sizeof(BlockHeader));
+
+    if (temp && get_split_size(temp) == block->size)
+    {
+        return temp;
+    }
+    else
+    {
+        // check if it's truly parent by comparing sizes
+        temp = (BlockHeader *)((uint8_t *)block - block->size - sizeof(BlockHeader));
+        if (get_split_size(temp) == block->size)
+        {
+            return temp;
+        }
+    }
+
+    return NULL; // No parent
 }
+
+void free_memory(void *mem)
+{
+    BlockHeader *current = (BlockHeader *)mem;
+    current->free = true;
+
+    while (current)
+    {
+        BlockHeader *parent = get_block_parent(current);
+
+        if (!parent)
+        {
+            // no parent, block is whole pool
+            return;
+        }
+
+        if (parent->right->free && parent->left->free)
+        {
+            parent->right = NULL;
+            parent->left = NULL;
+            parent->free = true;
+        }
+
+        current = parent;
+    }
+}
+
+// void print_block(BlockHeader block, int count)
+// {
+//     printf("Count %d: size=%d, free=%d, left=%p, right=%p\n", count, block.size, block.free, (void *)block.left, (void *)block.right);
+// }
 
 void print_memory_pool()
 {
@@ -203,6 +250,12 @@ int main()
     printf("Hello World!\n");
 
     int *arr = allocate_memory(128);
+
+    print_memory_pool();
+
+    printf("Trying to free allocated memory\n");
+
+    free_memory(arr);
 
     print_memory_pool();
 
