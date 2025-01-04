@@ -26,7 +26,7 @@ bool stack_is_empty(Stack *stack)
     return stack->top == -1;
 }
 
-void stack_push(Stack *stack, BlockHeader element)
+void stack_push(Stack *stack, BlockHeader *element)
 {
     if (stack_is_full(stack))
     {
@@ -42,13 +42,12 @@ void stack_push(Stack *stack, BlockHeader element)
     stack->data[++stack->top] = element;
 }
 
-BlockHeader stack_pop(Stack *stack)
+BlockHeader *stack_pop(Stack *stack)
 {
     if (stack_is_empty(stack))
     {
         fprintf(stderr, "Stack underflow\n");
-        BlockHeader empty = {0};
-        return empty;
+        return NULL;
     }
 
     return stack->data[stack->top--];
@@ -56,7 +55,7 @@ BlockHeader stack_pop(Stack *stack)
 
 void stack_free(Stack *stack)
 {
-    BlockHeader empty = {0};
+    // BlockHeader empty = {0};
     free(stack->data);
     stack->top = -1;
     stack->capacity = 0;
