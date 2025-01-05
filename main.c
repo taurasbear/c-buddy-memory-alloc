@@ -153,35 +153,38 @@ int main()
 {
     initialize_memory_allocator();
 
-    int *a = allocate_memory(sizeof(int) * 5);
-    int *b = allocate_memory(128);
-    int *c = allocate_memory(128);
-    int *d = allocate_memory(9);
-    int *e = allocate_memory(1);
+    int *a = allocate_memory(214);
 
-    print_memory_pool();
 
-    for (int i = 0; i < 5; i++)
-    {
-        a[i] = i;
-    }
+    // int *a = allocate_memory(sizeof(int) * 5);
+    // int *b = allocate_memory(128);
+    // int *c = allocate_memory(128);
+    // int *d = allocate_memory(9);
+    // int *e = allocate_memory(1);
 
-    printf("Printing 'a' values\n");
+    // print_memory_pool();
 
-    for (int i = 0; i < 5; i++)
-    {
-        printf("Value at index %d: %d\n", i, a[i]);
-    }
-    printf("\n");
+    // for (int i = 0; i < 5; i++)
+    // {
+    //     a[i] = i;
+    // }
 
-    printf("Trying to free allocated memory\n");
+    // printf("Printing 'a' values\n");
 
-    free_memory(a);
-    free_memory(b);
-    free_memory(d);
-    free_memory(e);
+    // for (int i = 0; i < 5; i++)
+    // {
+    //     printf("Value at index %d: %d\n", i, a[i]);
+    // }
+    // printf("\n");
 
-    printf("\n");
+    // printf("Trying to free allocated memory\n");
+
+    // free_memory(a);
+    // free_memory(b);
+    // free_memory(d);
+    // free_memory(e);
+
+    // printf("\n");
 
     print_memory_pool();
 
