@@ -1,6 +1,6 @@
 # Custom Memory Allocator Inspired by the Buddy System
 
-## A simple educational project using static memory to learn memory allocation concepts, written in C
+## An educational project written in C
 
 This project demonstrates a custom memory allocator written in C. It includes `allocate_memory` and `free_memory` functions similar to the standard library's `malloc` and `free`. Before allocating memory, the allocator must be initialized with `initialize_memory_allocator`.
 
