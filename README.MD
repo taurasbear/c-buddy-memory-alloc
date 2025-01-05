@@ -12,7 +12,9 @@ This project includes `allocate_memory` and `free_memory` functions similar to t
 The following code example would produce a binary tree structure as shown below:
 
 ```c
-// in this situation sizeof(BlockHeader) = 24
+// in this example 
+// sizeof(BlockHeader) = 24
+// MEMORY_POOL_SIZE = 1024
 
 initialize_memory_allocator();
 
