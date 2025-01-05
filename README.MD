@@ -7,7 +7,7 @@ This project demonstrates a custom memory allocator written in C. It includes `a
 ### Key Points
 
 - Memory is allocated in static memory (not the heap)
-- This is not a true buddy system implementation[^1]
+- This is not a true Buddy System implementation[^1]
 
 The following code example would produce a binary tree structure as shown below:
 
@@ -24,6 +24,6 @@ The actual block size in this implementation is smaller than expected because ea
 
 ### Additional Information
 
-[^1]: While this project is inspired by the buddy system, it does not implement a true buddy system because a true buddy system's block size must be a power of two.
+[^1]: While this project is inspired by the Buddy System, it does not implement a true Buddy System because a true Buddy System's block size must be a power of two.
 
 [^2]: In order to have a true Buddy System structure, the metadata of the struct would need to be stored elsewhere.
