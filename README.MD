@@ -9,7 +9,7 @@ This project includes `allocate_memory` and `free_memory` functions similar to t
 - Memory is allocated in static memory (not the heap)
 - This is not a true Buddy System implementation[^1]
 
-### Simple example
+### Example code
 
 ```c
 initialize_memory_allocator();
@@ -33,6 +33,7 @@ for (int i = 0; i < 5; i++)
 free_memory(a);
 ```
 
+### Free memory Structure
 The following code example would produce a binary tree structure as shown below:
 
 ```c
