@@ -9,6 +9,30 @@ This project includes `allocate_memory` and `free_memory` functions similar to t
 - Memory is allocated in static memory (not the heap)
 - This is not a true Buddy System implementation[^1]
 
+### Simple example
+
+```c
+initialize_memory_allocator();
+
+// Allocating memory for 5 int elements
+int *a = allocate_memory(sizeof(int) * 5);
+
+// Initializing dynamic array with data
+for (int i = 0; i < 5; i++)
+{
+    a[i] = i;
+}
+
+// Printing dynamic array values
+for (int i = 0; i < 5; i++)
+{
+    printf("Value at index %d: %d\n", i, a[i]);
+}
+
+// Freeing after use
+free_memory(a);
+```
+
 The following code example would produce a binary tree structure as shown below:
 
 ```c
