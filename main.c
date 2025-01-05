@@ -10,6 +10,12 @@ static uint8_t memory_pool[MEMORY_POOL_SIZE];
 
 static BlockHeader *free_btree;
 
+bool is_block_split(BlockHeader *block);
+
+int get_split_size(BlockHeader *block);
+
+void print_memory_pool();
+
 void initialize_memory_allocator()
 {
     free_btree = (BlockHeader *)memory_pool;
@@ -17,57 +23,6 @@ void initialize_memory_allocator()
     free_btree->free = true;
     free_btree->left = NULL;
     free_btree->right = NULL;
-}
-
-bool is_power_of_two(int number)
-{
-    if (number <= 0)
-    {
-        return false;
-    }
-
-    return (number & (number - 1)) == 0;
-}
-
-bool is_block_split(BlockHeader *block)
-{
-    return block->left != NULL && block->right != NULL;
-}
-
-int round_up_to_power_of_two(int size)
-{
-    if (size <= 0)
-    {
-        return 1;
-    }
-
-    size--;
-    size |= size >> 1;
-    size |= size >> 2;
-    size |= size >> 4;
-    size |= size >> 8;
-    size |= size >> 16;
-    // size |= size >> 32;
-    size++;
-
-    return size;
-}
-
-int get_split_size(BlockHeader *block)
-{
-    int split_size = (block->size / 2) - sizeof(BlockHeader);
-
-    if (split_size <= 1)
-    {
-        return -1;
-    }
-
-    if (split_size % 2 != 0) // Keeping it consistent with the real block sizes
-    {
-        split_size--;
-    }
-
-    return split_size;
 }
 
 void split_block(BlockHeader *block)
@@ -105,7 +60,7 @@ void *allocate_memory(int size)
 {
     if (size <= 0)
     {
-        fprintf(stderr, "parameter 'size' must be more than 0");
+        fprintf(stderr, "Function parameter 'size' must be greater than 0");
         return NULL;
     }
 
@@ -127,7 +82,7 @@ void *allocate_memory(int size)
             if (split_size < 0 || split_size < size)
             {
                 current->free = false;
-                return current; // shouldn't it return pointer to free memory and not to struct metadata?
+                return (void *)((uint8_t *)current + sizeof(BlockHeader));
             }
             else
             {
@@ -171,7 +126,7 @@ BlockHeader *get_block_parent(BlockHeader *block)
 
 void free_memory(void *mem)
 {
-    BlockHeader *current = (BlockHeader *)mem;
+    BlockHeader *current = (BlockHeader *)((uint8_t *)mem - sizeof(BlockHeader));
     current->free = true;
 
     while (current)
@@ -192,6 +147,67 @@ void free_memory(void *mem)
 
         current = parent;
     }
+}
+
+int main()
+{
+    initialize_memory_allocator();
+
+    int *a = allocate_memory(sizeof(int) * 5);
+    int *b = allocate_memory(128);
+    int *c = allocate_memory(128);
+    int *d = allocate_memory(9);
+    int *e = allocate_memory(1);
+
+    print_memory_pool();
+
+    for (int i = 0; i < 5; i++)
+    {
+        a[i] = i;
+    }
+
+    printf("Printing 'a' values\n");
+
+    for (int i = 0; i < 5; i++)
+    {
+        printf("Value at index %d: %d\n", i, a[i]);
+    }
+    printf("\n");
+
+    printf("Trying to free allocated memory\n");
+
+    free_memory(a);
+    free_memory(b);
+    free_memory(d);
+    free_memory(e);
+
+    printf("\n");
+
+    print_memory_pool();
+
+    return 0;
+}
+
+bool is_block_split(BlockHeader *block)
+{
+    return block->left != NULL && block->right != NULL;
+}
+
+int get_split_size(BlockHeader *block)
+{
+    int split_size = (block->size / 2) - sizeof(BlockHeader);
+
+    if (split_size <= 1)
+    {
+        return -1;
+    }
+
+    if (split_size % 2 != 0) // Keeping it consistent with the real block sizes
+    {
+        split_size--;
+    }
+
+    return split_size;
 }
 
 void print_memory_pool()
@@ -217,30 +233,4 @@ void print_memory_pool()
     }
 
     printf("\n");
-}
-
-int main()
-{
-    printf("Hello World!\n");
-
-    initialize_memory_allocator();
-
-    int *a = allocate_memory(128);
-    int *b = allocate_memory(128);
-    int *c = allocate_memory(128);
-    int *d = allocate_memory(9);
-    int *e = allocate_memory(1);
-
-    print_memory_pool();
-
-    printf("Trying to free allocated memory\n");
-
-    free_memory(a);
-    free_memory(b);
-    free_memory(d);
-    free_memory(e);
-
-    print_memory_pool();
-
-    return 0;
 }
